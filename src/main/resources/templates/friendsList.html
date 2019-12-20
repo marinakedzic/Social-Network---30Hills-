@@ -15,15 +15,23 @@ and open the template in the editor.
 		<div>
 			<div>
 				<table>
+                                    <h1>FRIENDS</h1>
 					<thead>
 						<tr>
-							<th>FRIENDS</th>
+							<th>First Name</th>
+							<th>Surname</th>
+                                                        <th>Age</th>
+							<th>Gender</th>
 			
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="friends :${friends}">
-							<td th:text="${friends}"></td>
+						<tr th:each="usersFriend :${usersFriends}">
+                                                        <td th:text="${usersFriend.firstName}"></td>
+                                                        <td th:text="${usersFriend.surname}"></td>
+                                                        <td th:text="${usersFriend.age}"></td>
+                                                        <td th:text="${usersFriend.gender}"></td>
+                                                        <td><a  th:href="@{/users/friendsOfFriends(id=${usersFriend.id})}">SEE FRIENDS</a></td>
 						</tr>
 					</tbody>
 
@@ -33,13 +41,13 @@ and open the template in the editor.
 				<table>
 					<thead>
 						<tr>
-							<th>FRIENDS OF FRIENDS</th>
+							<th>SUGGESTED FRIENDS</th>
 			
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="FoF :${friendsOfFriends}">
-							<td th:text="${FoF}"></td>
+						<tr>
+                                                    <td><a  th:href="@{/users/suggestedFriends(id=${id})}">SEE SUGGESTED</a></td>
 						</tr>
 					</tbody>
 

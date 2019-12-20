@@ -8,7 +8,10 @@ package com.marina.socialNetwork;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
@@ -39,13 +42,59 @@ public class HomeControler {
             Long idUser = id-1;
             JSONObject user =  (JSONObject) UserService.findUser(idUser);
             ArrayList friends = (ArrayList) user.get("friends");
-            ArrayList friendsOfFriends = new ArrayList();
+            List <JSONObject> usersFriends = new ArrayList <JSONObject>();
             for (Object friend : friends) {
             JSONObject newFriend = (JSONObject) UserService.findUser(((Long) friend)-1);
-            friendsOfFriends.add(newFriend.get("friends"));
+            usersFriends.add(newFriend);
         }
-            model.addAttribute("friendsOfFriends", friendsOfFriends);
-            model.addAttribute("friends", friends);
+            model.addAttribute("id", idUser);
+            model.addAttribute("usersFriends", usersFriends);
             return "friendsList";
 	}
+    @GetMapping("/users/friendsOfFriends")
+    public String UsersFriendsOfFriends(Model model, @RequestParam(defaultValue="")  Long id) throws IOException, FileNotFoundException, ParseException {
+            Long idUser = id-1;
+            JSONObject user =  (JSONObject) UserService.findUser(idUser);
+            ArrayList friends = (ArrayList) user.get("friends");
+            List <JSONObject> friendsOfFriends = new ArrayList <JSONObject>();
+            for (Object friend : friends) {
+            JSONObject newFriend = (JSONObject) UserService.findUser(((Long) friend)-1);
+            friendsOfFriends.add(newFriend);
+        }
+            model.addAttribute("friendsOfFriends", friendsOfFriends);
+            return "friendsOfFriends";
+	}
+   @GetMapping("/users/suggestedFriends")
+    public String UsersSuggestedFriends(Model model, @RequestParam(defaultValue="")  Long id) throws IOException, FileNotFoundException, ParseException {
+            List <JSONObject> listUsers = UserService.listUsers();
+            Long idUser = id;
+            JSONObject user1 =  (JSONObject) UserService.findUser(idUser);
+            ArrayList allFriendsOfFriends = new ArrayList();
+            ArrayList suggestedFriends = new ArrayList();
+            Set<Object> helpArray = new HashSet<>();
+            ArrayList friendsOfFriends1 = (ArrayList) user1.get("friends");
+            for (Object friendsOfFriend : friendsOfFriends1) {
+                JSONObject user =  (JSONObject) UserService.findUser((Long) friendsOfFriend-1);
+                ArrayList tryThis = (ArrayList) user.get("friends");
+                for (Object tryThi : tryThis) {
+                    allFriendsOfFriends.add(tryThi);
+                }
+       }
+           
+            for (Object allFriendsOfFriend : allFriendsOfFriends) {
+                if (helpArray.add(allFriendsOfFriend) == false) {
+                    suggestedFriends.add(allFriendsOfFriend);
+                } }
+             suggestedFriends = (ArrayList) suggestedFriends.stream() 
+                                      .distinct() 
+                                      .collect(Collectors.toList());
+            List <JSONObject> suggestedFriends1 = new ArrayList <JSONObject>();
+            for (Object suggestedFriend : suggestedFriends) {
+            JSONObject newFriend = (JSONObject) UserService.findUser(((Long) suggestedFriend)-1);
+            suggestedFriends1.add(newFriend);
+        }
+             
+            model.addAttribute("suggestedFriends", suggestedFriends1);
+            return "suggestedFriends";}
+        
 }

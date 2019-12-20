@@ -11,9 +11,7 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        <div>
-		<div>
-			<div>
+       <div>
 				<table>
 					<thead>
 						<tr>
@@ -21,25 +19,19 @@ and open the template in the editor.
 							<th>Surname</th>
                                                         <th>Age</th>
 							<th>Gender</th>
-                                                        <th>Friends</th>
 			
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="users :${listusers}">
-							<td th:text="${users.firstName}"></td>
-                                                        <td th:text="${users.surname}"></td>
-							<td th:text="${users.age}"></td>
-                                                        <td th:text="${users.gender}"></td>
-                                              
-                                                       <td><a  th:href="@{/users/friends(id=${users.id})}">SEE FRIENDS</a></td>
-						
+						<tr th:each="friendsOfFriend :${friendsOfFriends}">
+							<td th:text="${friendsOfFriend.firstName}"></td>
+                                                        <td th:text="${friendsOfFriend.surname}"></td>
+							<td th:text="${friendsOfFriend.age}"></td>
+                                                        <td th:text="${friendsOfFriend.gender}"></td>
 						</tr>
 					</tbody>
 
 				</table>
 			</div>
-		</div>
-</div>
     </body>
 </html>
