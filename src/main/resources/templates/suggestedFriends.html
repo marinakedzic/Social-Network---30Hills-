@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Social Network</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" th:href="@{/index.css}"/>
@@ -25,13 +25,16 @@ and open the template in the editor.
 			
 						</tr>
 					</thead>
-					<tbody>
+					<tbody th:with="condition=${#lists.isEmpty(suggestedFriends)}">
+                                            <h2 th:if="${condition}">We can't suggest friends to you, make more friends.</h2>
+                                            <div th:unless="${condition}">
 						<tr th:each="suggestedFriend :${suggestedFriends}">
 							<td th:text="${suggestedFriend.firstName}"></td>
                                                         <td th:text="${suggestedFriend.surname}"></td>
 							<td th:text="${suggestedFriend.age}"></td>
                                                         <td th:text="${suggestedFriend.gender}"></td>
 						</tr>
+                                            </div>
 					</tbody>
 
 				</table>

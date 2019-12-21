@@ -6,7 +6,7 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>TODO supply a title</title>
+        <title>Social Network</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" th:href="@{/index.css}"/>
@@ -15,7 +15,8 @@ and open the template in the editor.
          <a th:href="@{/index}"><h1><span class="blue">&lt;</span>Social<span class="blue">&gt;</span> <span class="yellow">NETWORK</span></h1></a>
         <div>
 		<div>
-			<div>   <h2>SUGGESTED FRIENDS</h2>
+			<div>      
+                                <h2>SUGGESTED FRIENDS</h2>
                                 <a th:href="@{/users/suggestedFriends(id=${id})}" class="button darkGrey">SEE SUGGESTED</a>
                                 <h1>FRIENDS</h1>
                                 
@@ -44,6 +45,7 @@ and open the template in the editor.
 
 				</table>
 			</div>
+                        <a href="#" onclick="history.go(-1)" class="button darkGrey">Go Back</a>
 		</div>
 </div>
     </body>

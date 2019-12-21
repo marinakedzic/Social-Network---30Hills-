@@ -28,7 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 @Controller
 public class HomeControler {
-    
+     // Go to index page and show all the users
     @RequestMapping(value={"/", "/index"}, method = RequestMethod.GET)
     public ModelAndView showUsers() throws IOException, FileNotFoundException, ParseException{
        ModelAndView modelAndView = new ModelAndView();
@@ -37,51 +37,76 @@ public class HomeControler {
        modelAndView.setViewName("index");
        return modelAndView;
     }
+     // When you click the button SEE FRIENDS on the list of all users on the index page
+    
     @GetMapping("/users/friends")
     public String UsersFriends(Model model, @RequestParam(defaultValue="")  Long id) throws IOException, FileNotFoundException, ParseException {
+            //take user's id and store into variable
             Long idUser = id-1;
-            List <JSONObject> usersFriends = UserService.listUsers(idUser);
+            //find user's friends
+            List <JSONObject> usersFriends = UserService.listFriends(idUser);
+            //sends id and list of user's friends on page friendsList.html
             model.addAttribute("id", idUser);
             model.addAttribute("usersFriends", usersFriends);
             return "friendsList";
 	}
+    
+    //When you click the button SEE FRIENDS in the user friends, same logic like in previous method
+    
     @GetMapping("/users/friendsOfFriends")
     public String UsersFriendsOfFriends(Model model, @RequestParam(defaultValue="")  Long id) throws IOException, FileNotFoundException, ParseException {
             Long idUser = id-1;
-            List <JSONObject> friendsOfFriends = UserService.listUsers(idUser);
+            List <JSONObject> friendsOfFriends = UserService.listFriends(idUser);
             model.addAttribute("friendsOfFriends", friendsOfFriends);
             return "friendsOfFriends";
 	}
+    //When you click the button Suggested Friends
+    
    @GetMapping("/users/suggestedFriends")
     public String UsersSuggestedFriends(Model model, @RequestParam(defaultValue="")  Long id) throws IOException, FileNotFoundException, ParseException {
             Long idUser = id;
+            //just takes ids of friends from user we choose
+            
             JSONObject user1 =  (JSONObject) UserService.findUser(idUser);
+            ArrayList idsOfFriends = (ArrayList) user1.get("friends");
+            
+            //store all ids of friends of friends
+            
             ArrayList allFriendsOfFriends = new ArrayList();
-            ArrayList suggestedFriends = new ArrayList();
-            Set<Object> helpArray = new HashSet<>();
-            ArrayList friendsOfFriends1 = (ArrayList) user1.get("friends");
-            for (Object friendsOfFriend : friendsOfFriends1) {
-                JSONObject user =  (JSONObject) UserService.findUser((Long) friendsOfFriend-1);
-                ArrayList tryThis = (ArrayList) user.get("friends");
-                for (Object tryThi : tryThis) {
-                    allFriendsOfFriends.add(tryThi);
+            
+            for (Object friend: idsOfFriends) {
+                JSONObject user =  (JSONObject) UserService.findUser((Long) friend-1);
+                ArrayList idsFriendsofFriends = (ArrayList) user.get("friends");
+                for (Object idsFriendofFriend : idsFriendsofFriends) {
+                    allFriendsOfFriends.add(idsFriendofFriend);
                 }
        }
+            //Store duplicates of friends
+            ArrayList duplicatedFriends = new ArrayList();
+            
+            //I use set beacuse using it makes it easier to take out duplicates
+            Set<Object> helpArray = new HashSet<>();
            
             for (Object allFriendsOfFriend : allFriendsOfFriends) {
                 if (helpArray.add(allFriendsOfFriend) == false) {
-                    suggestedFriends.add(allFriendsOfFriend);
+                    duplicatedFriends.add(allFriendsOfFriend);
                 } }
-             suggestedFriends = (ArrayList) suggestedFriends.stream() 
+            
+            //remove duplicates
+            
+             duplicatedFriends = (ArrayList) duplicatedFriends.stream() 
                                       .distinct() 
                                       .collect(Collectors.toList());
-            List <JSONObject> suggestedFriends1 = new ArrayList <JSONObject>();
-            for (Object suggestedFriend : suggestedFriends) {
-            JSONObject newFriend = (JSONObject) UserService.findUser(((Long) suggestedFriend)-1);
-            suggestedFriends1.add(newFriend);
+            
+             //Store all suggestedFriends
+             
+            List <JSONObject> suggestedFriends = new ArrayList <JSONObject>();
+            for (Object duplicatedFriend : duplicatedFriends) {
+            JSONObject newFriend = (JSONObject) UserService.findUser(((Long) duplicatedFriend)-1);
+            suggestedFriends.add(newFriend);
         }
              
-            model.addAttribute("suggestedFriends", suggestedFriends1);
+            model.addAttribute("suggestedFriends", suggestedFriends);
             return "suggestedFriends";}
         
 }

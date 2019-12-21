@@ -20,17 +20,45 @@ import org.springframework.core.io.ClassPathResource;
  *
  * @author Marina
  */
+//finds JSON file and makes list of all object in file
 public class UserService {
     static List<JSONObject> listAllUsers() throws FileNotFoundException, IOException, ParseException {
+        //JSONParser for reading JSON files
         JSONParser jsonParser = new JSONParser();
+        //find JSON file in resources and open
         ClassPathResource resource = new ClassPathResource("data.json");
         Object openJSON = jsonParser.parse(new FileReader(resource.getFile()));
-        JSONArray listusers = (JSONArray) openJSON;
-        return listusers;
+        //make list of all object in JSONArray from file
+        JSONArray listOfUsers = (JSONArray) openJSON;
+        return listOfUsers;
     }
-    static List<JSONObject> listUsers(long idUser) throws FileNotFoundException, IOException, ParseException {
+    
+    //finding specific user
+    
+    static JSONObject findUser(Long id) throws FileNotFoundException, IOException, ParseException {
+        //find all users
+        JSONArray listOfUsers = (JSONArray) listAllUsers();
+        //make new JSONObject
+        JSONObject user = new JSONObject();
+        //takes id from user and converts it to int because arrays only work with int
+        int id1 = id.intValue();
+        //finding user with previous id in the list of all users
+        for(int i = 0; i<listOfUsers.size();i++){
+            if(listOfUsers.get(i).equals(listOfUsers.get(id1))){
+            user = (JSONObject) listOfUsers.get(id1);
+            }
+        }
+        return user;
+    }
+    
+    //Finding all friends of specific user
+    
+    static List<JSONObject> listFriends(Long idUser) throws FileNotFoundException, IOException, ParseException {
+            //find user
             JSONObject user =  (JSONObject) UserService.findUser(idUser);
+            //store all friend's ids from user
             ArrayList friends = (ArrayList) user.get("friends");
+            //make list of friends based on ids in previuos list
             List <JSONObject> usersFriends = new ArrayList <JSONObject>();
             for (Object friend : friends) {
             JSONObject newFriend = (JSONObject) UserService.findUser(((Long) friend)-1);
@@ -38,18 +66,5 @@ public class UserService {
         }
             return usersFriends;
     }
-    static JSONObject findUser(Long id) throws FileNotFoundException, IOException, ParseException {
-        JSONParser jsonParser = new JSONParser();
-        ClassPathResource resource = new ClassPathResource("data.json");
-        Object openJSON = jsonParser.parse(new FileReader(resource.getFile()));
-        JSONArray listusers = (JSONArray) openJSON;
-        JSONObject user = new JSONObject();
-        int id1 = id.intValue();
-        for(int i = 0; i<listusers.size();i++){
-            if(listusers.get(i).equals(listusers.get(id1))){
-            user = (JSONObject) listusers.get(id1);
-            }
-        }
-        return user;
-    }
+    
 }
