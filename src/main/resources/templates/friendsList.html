@@ -9,19 +9,26 @@ and open the template in the editor.
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" th:href="@{/index.css}"/>
     </head>
      <body>
+         <a th:href="@{/index}"><h1><span class="blue">&lt;</span>Social<span class="blue">&gt;</span> <span class="yellow">NETWORK</span></h1></a>
         <div>
 		<div>
-			<div>
-				<table>
-                                    <h1>FRIENDS</h1>
+			<div>   <h2>SUGGESTED FRIENDS</h2>
+                                <a th:href="@{/users/suggestedFriends(id=${id})}" class="button darkGrey">SEE SUGGESTED</a>
+                                <h1>FRIENDS</h1>
+                                
+                                <br>
+				<table class="container">
+                                    
 					<thead>
 						<tr>
 							<th>First Name</th>
 							<th>Surname</th>
                                                         <th>Age</th>
 							<th>Gender</th>
+                                                        <th>Friends of Friend</th>
 			
 						</tr>
 					</thead>
@@ -32,22 +39,6 @@ and open the template in the editor.
                                                         <td th:text="${usersFriend.age}"></td>
                                                         <td th:text="${usersFriend.gender}"></td>
                                                         <td><a  th:href="@{/users/friendsOfFriends(id=${usersFriend.id})}">SEE FRIENDS</a></td>
-						</tr>
-					</tbody>
-
-				</table>
-			</div>
-                    <div>
-				<table>
-					<thead>
-						<tr>
-							<th>SUGGESTED FRIENDS</th>
-			
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-                                                    <td><a  th:href="@{/users/suggestedFriends(id=${id})}">SEE SUGGESTED</a></td>
 						</tr>
 					</tbody>
 

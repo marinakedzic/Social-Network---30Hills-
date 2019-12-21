@@ -9,10 +9,15 @@ and open the template in the editor.
         <title>TODO supply a title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" th:href="@{/index.css}"/>
     </head>
     <body>
-       <div>
-				<table>
+<a th:href="@{/index}"><h1><span class="blue">&lt;</span>Social<span class="blue">&gt;</span> <span class="yellow">NETWORK</span></h1></a>
+
+<a href="#" onclick="history.go(-1)" class="button darkGrey">Go Back</a>
+<h1>FRIENDS OF FRIEND</h1>
+<div>
+				<table class="container">
 					<thead>
 						<tr>
 							<th>First Name</th>

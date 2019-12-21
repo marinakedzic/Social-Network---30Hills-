@@ -21,12 +21,22 @@ import org.springframework.core.io.ClassPathResource;
  * @author Marina
  */
 public class UserService {
-    static List<JSONObject> listUsers() throws FileNotFoundException, IOException, ParseException {
+    static List<JSONObject> listAllUsers() throws FileNotFoundException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
         ClassPathResource resource = new ClassPathResource("data.json");
         Object openJSON = jsonParser.parse(new FileReader(resource.getFile()));
         JSONArray listusers = (JSONArray) openJSON;
         return listusers;
+    }
+    static List<JSONObject> listUsers(long idUser) throws FileNotFoundException, IOException, ParseException {
+            JSONObject user =  (JSONObject) UserService.findUser(idUser);
+            ArrayList friends = (ArrayList) user.get("friends");
+            List <JSONObject> usersFriends = new ArrayList <JSONObject>();
+            for (Object friend : friends) {
+            JSONObject newFriend = (JSONObject) UserService.findUser(((Long) friend)-1);
+            usersFriends.add(newFriend);
+        }
+            return usersFriends;
     }
     static JSONObject findUser(Long id) throws FileNotFoundException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
